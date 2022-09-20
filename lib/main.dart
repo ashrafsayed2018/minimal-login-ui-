@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:minimal_login_ui/login_page.dart';
 
-void main() {
+import 'package:firebase_core/firebase_core.dart';
+import 'package:minimal_login_ui/main_page.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -11,13 +15,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'minimal login ui',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const LoginPage(),
+      home: MianPage(),
     );
   }
 }
