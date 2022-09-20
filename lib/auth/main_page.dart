@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:minimal_login_ui/auth/auth_page.dart';
 import 'package:minimal_login_ui/home_page.dart';
-import 'package:minimal_login_ui/login_page.dart';
 
 class MianPage extends StatelessWidget {
   const MianPage({Key? key}) : super(key: key);
@@ -16,7 +16,7 @@ class MianPage extends StatelessWidget {
               if (snapshot.hasData) {
                 return const HomePage();
               } else {
-                return const LoginPage();
+                return const AuthPage();
               }
             }),
       ),
