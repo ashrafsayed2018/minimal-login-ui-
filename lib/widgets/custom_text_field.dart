@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:minimal_login_ui/constants/colors.dart';
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -17,17 +18,21 @@ class CustomTextField extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 25),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.grey.shade200,
-          border: Border.all(color: Colors.white),
+          color: AppColor.kLightGreyColor,
+          border: Border.all(color: AppColor.kGreyColor),
           borderRadius: BorderRadius.circular(12),
         ),
         child: TextField(
           obscureText: isPassword,
           controller: controller,
           decoration: InputDecoration(
-            fillColor: Colors.grey.shade200,
             hintText: hintText,
             border: InputBorder.none,
+            focusedBorder: OutlineInputBorder(
+              borderSide:
+                  BorderSide(color: Colors.deepPurple.shade200, width: 2),
+              borderRadius: BorderRadius.circular(10),
+            ),
             contentPadding: const EdgeInsets.only(left: 10),
           ),
         ),

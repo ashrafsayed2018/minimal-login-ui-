@@ -1,37 +1,46 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:minimal_login_ui/constants/colors.dart';
+import 'package:minimal_login_ui/pages/forget_password_page.dart';
+import 'package:minimal_login_ui/widgets/custom_button.dart';
 import 'package:minimal_login_ui/widgets/custom_text_field.dart';
 
-class RegisterPage extends StatefulWidget {
-  final VoidCallback showLoginPage;
-  const RegisterPage({required this.showLoginPage, Key? key}) : super(key: key);
+class LoginPage extends StatefulWidget {
+  final VoidCallback showRegisterPage;
+  const LoginPage({required this.showRegisterPage, Key? key}) : super(key: key);
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+
+  Future _signIn() async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+    } on FirebaseAuthException catch (e) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text("error"),
+              content: Text(e.message!),
+            );
+          });
+    }
+  }
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
-    _confirmPasswordController.dispose();
     super.dispose();
-  }
-
-  Future _register() async {
-    if (_passwordController.text.trim() ==
-        _confirmPasswordController.text.trim()) {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim());
-    }
   }
 
   @override
@@ -53,21 +62,20 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
           // hello text
           Text(
-            "Hello there",
+            "Hello Again",
             style: GoogleFonts.bebasNeue(
               fontSize: 36,
             ),
           ),
           const SizedBox(height: 10),
           Text(
-            "Register below with your details",
+            "Welcome back you have been missed",
             style: GoogleFonts.bebasNeue(
               fontSize: 18,
               letterSpacing: 2,
             ),
           ),
           const SizedBox(height: 50),
-
           // email text field
 
           CustomTextField(
@@ -76,45 +84,47 @@ class _RegisterPageState extends State<RegisterPage> {
             height: 15,
           ),
           // password text field
+
           CustomTextField(
             controller: _passwordController,
             hintText: "Enter your password",
             isPassword: true,
           ),
+
           const SizedBox(
-            height: 15,
+            height: 20,
           ),
-          // confirm password text field
-          CustomTextField(
-            controller: _confirmPasswordController,
-            hintText: "confirm your password",
-            isPassword: true,
+
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 25),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                InkWell(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return const ForgetPasswordPage();
+                    }));
+                  },
+                  child: const Text(
+                    "forget password ?",
+                    style: TextStyle(
+                      color: AppColor.kLinkColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
           const SizedBox(
             height: 20,
           ),
           // sign in button
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25),
-            child: GestureDetector(
-              onTap: _register,
-              child: Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.deepPurple,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Center(
-                  child: Text(
-                    "Sign Up",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20),
-                  ),
-                ),
-              ),
-            ),
+          CustomButton(
+            text: "Sign In",
+            action: _signIn,
           ),
           const SizedBox(
             height: 25,
@@ -124,17 +134,17 @@ class _RegisterPageState extends State<RegisterPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                "already have an account ?",
+                "Not a memeber ?",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
               ),
               GestureDetector(
-                onTap: widget.showLoginPage,
+                onTap: widget.showRegisterPage,
                 child: const Text(
-                  "  Login now",
+                  "  Register now",
                   style: TextStyle(
-                    color: Colors.blue,
+                    color: AppColor.kLinkColor,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
