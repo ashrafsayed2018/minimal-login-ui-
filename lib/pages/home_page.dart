@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:minimal_login_ui/constants/colors.dart';
 import 'package:minimal_login_ui/read_data/get_user_name.dart';
 
@@ -83,6 +83,43 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ],
+        ),
+      ),
+      bottomNavigationBar: Container(
+        color: AppColor.kPrimaryColor,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+          child: GNav(
+              backgroundColor: AppColor.kPrimaryColor,
+              color: Colors.grey.shade300,
+              activeColor: Colors.white,
+              tabBackgroundColor: Colors.deepPurple.shade300,
+              tabs: const [
+                GButton(
+                  padding: EdgeInsets.all(10),
+                  gap: 8,
+                  icon: Icons.home,
+                  text: "Home",
+                ),
+                GButton(
+                  padding: EdgeInsets.all(10),
+                  gap: 8,
+                  icon: Icons.favorite_border,
+                  text: "Likes",
+                ),
+                GButton(
+                  padding: EdgeInsets.all(10),
+                  gap: 8,
+                  icon: Icons.search,
+                  text: "Search",
+                ),
+                GButton(
+                  padding: EdgeInsets.all(10),
+                  gap: 8,
+                  icon: Icons.settings,
+                  text: "Settings",
+                ),
+              ]),
         ),
       ),
     );
