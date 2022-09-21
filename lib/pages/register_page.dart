@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,6 +15,9 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _ageController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
@@ -21,6 +25,9 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   void dispose() {
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _ageController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
@@ -31,9 +38,19 @@ class _RegisterPageState extends State<RegisterPage> {
     if (_passwordController.text.trim() ==
         _confirmPasswordController.text.trim()) {
       try {
+        // create user
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
             email: _emailController.text.trim(),
             password: _passwordController.text.trim());
+
+        // add user to users table in firbase database
+
+        addUserToDatabse(
+            _firstNameController.text.trim(),
+            _lastNameController.text.trim(),
+            int.parse(_ageController.text.trim()),
+            _emailController.text.trim(),
+            _passwordController.text.trim());
       } on FirebaseAuthException catch (e) {
         showDialog(
             context: context,
@@ -47,20 +64,23 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
+  Future addUserToDatabse(String firstName, String lastName, int age,
+      String email, String password) async {
+    await FirebaseFirestore.instance.collection("users").add({
+      "first_name": firstName,
+      "last_name": lastName,
+      "age": age,
+      "email": email,
+      "password": password,
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade300,
       body: SingleChildScrollView(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          const SizedBox(
-            height: 50,
-          ),
-          const Icon(
-            Icons.android_sharp,
-            size: 100,
-            color: Colors.deepPurple,
-          ),
           const SizedBox(
             height: 50,
           ),
@@ -79,14 +99,39 @@ class _RegisterPageState extends State<RegisterPage> {
               letterSpacing: 2,
             ),
           ),
-          const SizedBox(height: 50),
+          const SizedBox(height: 30),
 
+          // firstname text field
+
+          CustomTextField(
+              controller: _firstNameController,
+              hintText: "Enter your first name"),
+          const SizedBox(
+            height: 10,
+          ),
+
+          // lastname text field
+
+          CustomTextField(
+              controller: _lastNameController,
+              hintText: "Enter your last name"),
+          const SizedBox(
+            height: 10,
+          ),
+
+          // age text field
+
+          CustomTextField(
+              controller: _ageController, hintText: "Enter your age"),
+          const SizedBox(
+            height: 10,
+          ),
           // email text field
 
           CustomTextField(
               controller: _emailController, hintText: "Enter your Email"),
           const SizedBox(
-            height: 15,
+            height: 10,
           ),
           // password text field
           CustomTextField(
@@ -95,7 +140,7 @@ class _RegisterPageState extends State<RegisterPage> {
             isPassword: true,
           ),
           const SizedBox(
-            height: 15,
+            height: 10,
           ),
           // confirm password text field
           CustomTextField(
